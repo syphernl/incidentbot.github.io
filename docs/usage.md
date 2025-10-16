@@ -48,6 +48,8 @@ If the Jira integration is enabled, you'll see an option to create a Jira issue:
 
 ![Welcome message with Jira enabled](./assets/welcome_message_with_jira.png){: style="width:500px"}
 
+If the GitLab integration is enabled you'll see an option to create a GitLab issue.
+
 From here, one can pick up a role by clicking on the role buttons:
 
 ![Role message](./assets/role_update.png)

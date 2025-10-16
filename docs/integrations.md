@@ -295,3 +295,107 @@ zoom:
   enabled: true
   auto_creating_meeting: true
 ```
+
+## GitLab
+
+To enable and configure the GitLab integration, you need to set up environment variables and define settings for it in your `config.yaml`.
+
+### Environment Variables
+
+The following variables must be added to your environment to connect to GitLab:
+
+| Variable | Description | Example |
+| :--- | :--- | :--- |
+| **`GITLAB_URL`** | The base URL for your GitLab instance. | `https://gitlab.com` |
+| **`GITLAB_API_TOKEN`** | A personal or service API token. | `xxxx` |
+
+!!! note **Token Requirements**
+    The `GITLAB_API_TOKEN` **must** be created with the **`api`** scope and have at least **`Reporter`** access to the target project.
+
+    !!! tip **Best practice: Use Service Accounts**
+        If you are using **GitLab Premium** or **Ultimate**, it is highly recommended to use a [GitLab Service Account](https://docs.gitlab.com/user/profile/service_accounts/) and create a token within this. This user should be added to the project where you create issues.
+
+        **Benefit:** The service account's user details/name will remain **static**, unlike Project Access Tokens, which change upon expiration and renewal. Using a service account also avoids "ugly" usernames associated with Project Access Tokens.
+
+### Configuration Settings
+
+Define the integration settings within the `integrations: gitlab:` section of your `config.yaml`.
+
+```yaml
+integrations:
+  gitlab:
+    # Basic Settings
+    enabled: true                  # Set to 'true' to enable the GitLab integration.
+    project_id: 123                # The numerical ID of the GitLab project (found in the project settings) where issues/incidents should be created.
+    issue_type: incident           # Defines the type of object to create: "incident" or "issue".
+
+    # Automation
+    auto_create_incident: true     # Set to 'true' to automatically create a GitLab incident/issue when a new incident is declared.
+    auto_create_postmortem: true   # Set to 'true' to automatically post the final post-mortem content to the issue upon incident resolution.
+    incident_confidential: true    # Set to 'true' to make the automatically created GitLab issue/incident confidential.
+
+    # Labeling
+    labels:                        # A list of static labels added to all new GitLab issues/incidents.
+      - incident-management
+    security_labels:               # Labels specifically applied when the internal incident is flagged as security-related.
+      - security
+    label_template: "incident-channel::{channel_name}" # A template for a dynamic label; `{channel_name}` is a placeholder for the communication channel name (e.g., Slack).
+```
+
+### Severity and Status Mappings
+
+These sections allow the integration to synchronize internal incident properties (Severity, Status) with GitLab's corresponding fields and labels.
+
+#### Severity Mapping
+
+Maps your internal incident severity levels (e.g., SEV1) to a GitLab severity (where supported) and corresponding labels.
+
+```yaml
+    # Mapping of internal incident severity levels (e.g., SEV1) to GitLab's severity level and corresponding labels.
+    severity_mapping:
+      - incident_severity: SEV1
+        gitlab_severity: CRITICAL
+        gitlab_labels: ['incident-level::critical']
+
+      - incident_severity: SEV2
+        gitlab_severity: HIGH
+        gitlab_labels: ['incident-level::high']
+
+      - incident_severity: SEV3
+        gitlab_severity: MEDIUM
+        gitlab_labels: ['incident-level::medium']
+
+      - incident_severity: SEV4
+        gitlab_severity: LOW
+        gitlab_labels: ['incident-level::low']
+```
+
+#### Status Mapping
+
+Maps your internal incident status (e.g., Investigating) to a GitLab issue state (`open`, `close`, `reopen`) and corresponding labels.
+
+```yaml
+    # Mapping of internal incident statuses (e.g., Investigating) to GitLab's issue status (open/close/reopen) and corresponding labels.
+    status_mapping:
+      - incident_status: Investigating
+        gitlab_status: open
+        gitlab_labels: ['incident::investigating']
+
+      - incident_status: Identified
+        gitlab_status: reopen # Use 'reopen' if the status changes back from Resolved to keep the issue active.
+        gitlab_labels: ['incident::identified']
+
+      - incident_status: Monitoring
+        gitlab_status: reopen # Keeps the issue open or reopens it.
+        gitlab_labels: ['incident::monitoring']
+
+      - incident_status: Resolved
+        gitlab_status: close # Closes the GitLab issue.
+        gitlab_labels: ['incident::resolved']
+```
+
+!!! warning **Note on scoped labels**
+    Nested labels (e.g., `incident-level::critical`), also known as **scoped labels**, are officially supported and display nicely in **GitLab Premium** or **Ultimate**.
+
+     * While they may still technically work in **GitLab Free**, they might be displayed as flat labels instead.
+     * For GitLab Free, you may want to simply avoid scoped labels and use a flat format instead (e.g., use `incident-level-critical` instead of `incident-level::critical`).

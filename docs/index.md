@@ -17,8 +17,8 @@ The core feature is a ChatOps bot to allow your teams to easily and effectively 
 - Digest channel to keep the rest of the organization up to date with incidents at all time.
 - Define your own roles, severities, and statuses, or use ones configured right out of the box.
 - Keep stakeholders updated using dynamic updates.
-- Craft a postmortem document using an integration with Confluence that allows you to use your own templates.
-- Create issues in Jira directly from incident channels.
+- Craft a postmortem document using an integration with Confluence that allows you to use your own templates or post them to the GitLab issue.
+- Create issues in Jira or GitLab directly from incident channels.
 - Page teams in PagerDuty or OpsGenie.
 - Manage Statuspage incidents directly from incident channels.
 - Create Zoom meetings for each incident to keep communications organized.
