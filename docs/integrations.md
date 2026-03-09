@@ -243,6 +243,54 @@ You can use the buttons to provide updates. The message will be updated indicati
 
 ![Statuspage final update](./assets/statuspage_final_update.png){: style="width:600px"}
 
+## Phare
+
+You can integrate with [Phare](https://phare.io) to automatically prompt for Phare incident creation when a new incident is declared. Incidents can be created, updated, and recovered directly from Slack.
+
+Provide the following environment variables:
+
+- `PHARE_API_KEY` - Phare API key.
+- `PHARE_PROJECT_ID` - *(Optional)* Phare project ID. Required when using an organization-scoped API key.
+
+### Configuring the Phare Integration
+
+In the application's `config.yaml`, add a `phare` section under `integrations`:
+
+!!! warning
+
+    `PHARE_API_KEY` must be set for the integration to start. All other values have defaults.
+
+```yaml
+integrations:
+  phare:
+    enabled: true
+    url: https://phare.io
+```
+
+You can optionally restrict who can create and manage Phare incidents from Slack by adding Slack group names under `permissions.groups`. Anyone not in one of these groups will receive an ephemeral message indicating they lack the required permissions.
+
+```yaml
+integrations:
+  phare:
+    enabled: true
+    url: https://phare.io
+    permissions:
+      groups:
+        - sre-team
+```
+
+### Using the Phare Integration
+
+With the integration enabled, a prompt will appear in the incident channel when a new incident is declared. Click **Start Phare Incident** to open the creation modal.
+
+The modal allows you to set a title, description, impact level, and select affected monitors. Monitors are fetched live from the Phare API — no configuration required.
+
+Once created, a management message appears in the channel showing the current state and a log of updates. Use the **Update Incident** button to post updates or resolve the incident.
+
+!!! note
+
+    Resolving an incident calls Phare's dedicated recovery endpoint (`POST /uptime/incidents/{id}/recover`) rather than posting a state update.
+
 ## PagerDuty
 
 You can integrate with PagerDuty to issue pages to teams. Set the following environment variables:
