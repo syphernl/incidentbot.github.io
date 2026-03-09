@@ -285,6 +285,10 @@ With the integration enabled, a prompt will appear in the incident channel when 
 
 The modal allows you to set a title, description, impact level, and select affected monitors. Monitors are fetched live from the Phare API — no configuration required.
 
+!!! note "Multiple status pages"
+
+    Phare does not expose a status page selector on the incident API. Which status pages display an incident is determined entirely by monitor selection: each status page is configured with components that reference specific monitors, so selecting a monitor automatically surfaces the incident on any status page that includes it as a component.
+
 Once created, a management message appears in the channel showing the current state and a log of updates. Use the **Update Incident** button to post updates or resolve the incident.
 
 !!! note
