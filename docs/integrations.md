@@ -264,7 +264,6 @@ In the application's `config.yaml`, add a `phare` section under `integrations`:
 integrations:
   phare:
     enabled: true
-    url: https://phare.io
 ```
 
 You can optionally restrict who can create and manage Phare incidents from Slack by adding Slack group names under `permissions.groups`. Anyone not in one of these groups will receive an ephemeral message indicating they lack the required permissions.
@@ -273,7 +272,6 @@ You can optionally restrict who can create and manage Phare incidents from Slack
 integrations:
   phare:
     enabled: true
-    url: https://phare.io
     permissions:
       groups:
         - sre-team
