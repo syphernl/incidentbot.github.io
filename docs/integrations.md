@@ -243,16 +243,16 @@ You can use the buttons to provide updates. The message will be updated indicati
 
 ![Statuspage final update](./assets/statuspage_final_update.png){: style="width:600px"}
 
-## Phare
+## Phare Uptime
 
-You can integrate with [Phare](https://phare.io) to automatically prompt for Phare incident creation when a new incident is declared. Incidents can be created, updated, and recovered directly from Slack.
+You can integrate with [Phare Uptime](https://phare.io) to automatically prompt for Phare Uptime incident creation when a new incident is declared. Incidents can be created, updated, and recovered directly from Slack.
 
 Provide the following environment variables:
 
 - `PHARE_API_KEY` - Phare API key.
 - `PHARE_PROJECT_ID` - *(Optional)* Phare project ID. Required when using an organization-scoped API key.
 
-### Configuring the Phare Integration
+### Configuring the Phare Uptime Integration
 
 In the application's `config.yaml`, add a `phare` section under `integrations`:
 
@@ -277,21 +277,21 @@ integrations:
         - sre-team
 ```
 
-### Using the Phare Integration
+### Using the Phare Uptime Integration
 
-With the integration enabled, a prompt will appear in the incident channel when a new incident is declared. Click **Start Phare Incident** to open the creation modal.
+With the integration enabled, a prompt will appear in the incident channel when a new incident is declared. Click **Start Phare Uptime Incident** to open the creation modal.
 
 The modal allows you to set a title, description, impact level, and select affected monitors. Monitors are fetched live from the Phare API — no configuration required.
 
 !!! note "Multiple status pages"
 
-    Phare does not expose a status page selector on the incident API. Which status pages display an incident is determined entirely by monitor selection: each status page is configured with components that reference specific monitors, so selecting a monitor automatically surfaces the incident on any status page that includes it as a component.
+    Phare Uptime does not expose a status page selector on the incident API. Which status pages display an incident is determined entirely by monitor selection: each status page is configured with components that reference specific monitors, so selecting a monitor automatically surfaces the incident on any status page that includes it as a component.
 
 Once created, a management message appears in the channel showing the current state and a log of updates. Use the **Update Incident** button to post updates or resolve the incident.
 
 !!! note
 
-    Resolving an incident calls Phare's dedicated recovery endpoint (`POST /uptime/incidents/{id}/recover`) rather than posting a state update.
+    Resolving an incident calls Phare Uptime's dedicated recovery endpoint (`POST /uptime/incidents/{id}/recover`) rather than posting a state update.
 
 ## PagerDuty
 
