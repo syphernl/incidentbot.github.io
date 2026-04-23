@@ -1,10 +1,12 @@
 # Usage Guide
 
-## Interacting
+Interaction differs by platform. Slack uses slash commands and interactive messages. Matrix uses an Element widget for incident creation and a smaller `!incident` command set for day-to-day actions.
+
+## Slack
 
 The main method of interacting with the bot is via its slash command - `/incidentbot` by default.
 
-Type `/incidentbot` (or whatever you've set the slash command to) in any channcel to get a prompt:
+Type `/incidentbot` (or whatever you've set the slash command to) in any channel to get a prompt:
 
 ![Slash command](./assets/slashcommand.png){: style="width:400px"}
 
@@ -99,3 +101,36 @@ You can click on Incident Bot in the Slack sidebar to go to the app home:
 ![App home](./assets/app_home.png){: style="width:500px"}
 
 From here, you can declare an incident, create a maintenance window (if enabled), see open incidents, and see any maintenance windows.
+
+## Matrix
+
+### Starting an Incident
+
+Matrix deployments create incidents from the widget panel in the digest room rather than from a slash command.
+
+When `matrix.widget_base_url` is configured, Incident Bot registers a `Create Incident` widget in `matrix.digest_room_id` during startup. Open that room in Element, open the widget panel, and submit the incident form there.
+
+If `matrix.widget_base_url` is not configured, the bot can still run in Matrix mode, but incident creation through the embedded widget is unavailable.
+
+### Managing an Incident
+
+Each incident room gets an `Incident Controls` widget registered automatically when the room is created (requires `matrix.widget_base_url`). Open the widget panel in the incident room to:
+
+- **Join a role** — select a role from the list and claim it; the room topic updates automatically to reflect the Incident Commander when claimed.
+- **Set severity** — change the incident severity; the room topic updates immediately.
+- **Set status** — advance the incident through its lifecycle statuses.
+- **Resolve** — mark the incident as resolved.
+
+#### Text Commands
+
+As an alternative to the widget (or when the widget is not configured), the bot responds to `!incident` text commands sent in any room it has joined:
+
+| Command | Description |
+|---|---|
+| `!incident help` | Show available commands |
+| `!incident status` | List all active incidents |
+| `!incident join <incident_id> <role>` | Claim a role on an incident |
+| `!incident severity <incident_id> <severity>` | Update incident severity |
+| `!incident resolve <incident_id>` | Resolve an incident |
+
+New incidents generate a digest notification in the configured digest room with a direct link to the incident room. The incident room receives the standard boilerplate and welcome content adapted for Matrix.

@@ -13,8 +13,8 @@ The core feature is a ChatOps bot to allow your teams to easily and effectively 
 
 ## Features at a Glance
 
-- Create a channel in Slack to gather resources and handle incidents.
-- Digest channel to keep the rest of the organization up to date with incidents at all time.
+- Create incident rooms in Slack or Matrix to gather responders and handle incidents.
+- Digest room or channel to keep the rest of the organization up to date with incidents at all times.
 - Define your own roles, severities, and statuses, or use ones configured right out of the box.
 - Keep stakeholders updated using dynamic updates.
 - Craft a postmortem document using an integration with Confluence that allows you to use your own templates.
@@ -30,9 +30,9 @@ For more information on integrations, check out the [integrations](integrations.
 
 ## Quick Start
 
-- [Create a Slack app](https://api.slack.com/apps?new_app=1) for this application.
-- Select `from an app manifest` and copy `manifest.yaml` out of this repository and paste it in to automatically configure the app.
-- You'll need the app token, bot token, and user token for your application and provide those as `SLACK_APP_TOKEN`, `SLACK_BOT_TOKEN`, and `SLACK_USER_TOKEN` - these can be found within the app's configuration page in Slack.
+- Choose a platform for the deployment: `slack` or `matrix`.
+- For Slack, [create a Slack app](https://api.slack.com/apps?new_app=1), select `from an app manifest`, and copy `manifest.yaml` from this repository to configure it.
+- For Matrix, provision a bot user, obtain an access token, and identify the digest room the bot should use for incident updates and widget registration.
 - You'll need a Postgres instance to connect to.
-- Create a channel to serve as your incident "digest" channel - something like `#incidents`.
-- Configure the app using `config.yaml` and deploy it to Kubernetes, Docker, or whichever platform you choose. Check out the [installation](installation.md) guide for more details.
+- Create a shared digest location for incident updates: a Slack channel like `#incidents` or a Matrix room such as `!incidents:example.com`.
+- Configure the app using `config.yaml` and `.env`, then deploy it to Kubernetes, Docker, or whichever platform you choose. Check out the [installation](installation.md) guide for more details.

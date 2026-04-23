@@ -61,7 +61,10 @@ It is recommended to keep these disabled when the API is exposed to the general 
 
 ### Digest Channel
 
-The digest channel is where updates are sent regarding all incidents managed by the bot. The channel is `#incidents` by default.
+The digest destination is where updates are sent regarding all incidents managed by the bot.
+
+- In Slack mode, this is the channel named by `digest_channel`. The default is `#incidents`.
+- In Matrix mode, the actual room used for digest updates is `matrix.digest_room_id`. You should still set a sensible `digest_channel` value for consistency in logs and defaults, but Matrix deployments should treat `matrix.digest_room_id` as authoritative.
 
 To change it, set the following value in `config.yaml`:
 
@@ -100,7 +103,19 @@ initial_role_watcher_minutes: 10
 
 ### Links
 
-foo do these even get used?
+!!! note
+
+    This setting applies to Slack deployments only.
+
+You can configure a list of custom links that will appear in incident messages (boilerplate and digest notifications). Each link requires a `title` and a `url`.
+
+```yaml
+links:
+  - title: Runbooks
+    url: https://wiki.example.com/runbooks
+  - title: Status Page
+    url: https://status.example.com
+```
 
 ### Maintenance Windows
 
@@ -160,7 +175,7 @@ options:
   # If true, pin the meeting link to the incident channel upon creation.
   pin_meeting_link_to_channel: false
   # This limits the amount of incidents shown on the summary on the app home page.
-  # It is not recommended to raise this value very high due to Slack limitations on how many blocks can appear in a message.
+  # Applies to Slack deployments only. Not recommended to raise very high due to Slack block limits.
   # This is the default value.
   show_most_recent_incidents_app_home_limit: 5
   # Application timezone.
@@ -168,9 +183,77 @@ options:
   timezone: UTC
 ```
 
+!!! note
+
+    `options.auto_invite_groups` relies on Slack usergroups. It does not currently have a Matrix equivalent.
+
 ### Platform
 
-Right now, the only valid value for the `platform` field is `slack`.
+Incident Bot supports one chat platform per deployment. Valid values are `slack` and `matrix`.
+
+The platform can be selected in either `config.yaml` or `.env` using `PLATFORM`. If both are provided, the environment variable takes precedence.
+
+Slack remains the default platform and uses slash commands plus Block Kit interactions.
+
+Matrix mode uses a bot account connected with `matrix-nio`. Digest notifications are sent to `matrix.digest_room_id`, and incident creation is handled through the widget registered in that room when `matrix.widget_base_url` is configured.
+
+Slack example:
+
+```yaml
+platform: slack
+digest_channel: incidents
+```
+
+Slack `.env` example:
+
+```bash
+PLATFORM=slack
+```
+
+Matrix platform selection:
+
+```yaml
+platform: matrix
+```
+
+Matrix `.env` platform selection:
+
+```bash
+PLATFORM=matrix
+```
+
+Matrix connection settings can be provided either in `.env` using `MATRIX_*` variables or in the `matrix` block in `config.yaml`. If both are provided, the environment variables take precedence.
+
+Matrix `.env` example:
+
+```bash
+MATRIX_HOMESERVER=https://matrix.example.com
+MATRIX_USER_ID=@incidentbot:example.com
+MATRIX_ACCESS_TOKEN=syt_...
+MATRIX_DEVICE_ID=INCIDENTBOT
+MATRIX_DIGEST_ROOM_ID=!abcdef:example.com
+MATRIX_WIDGET_BASE_URL=https://incidentbot.example.com
+```
+
+Matrix `config.yaml` example:
+
+```yaml
+matrix:
+  homeserver: https://matrix.example.com
+  user_id: "@incidentbot:example.com"
+  access_token: "syt_..."
+  device_id: INCIDENTBOT
+  digest_room_id: "!abcdef:example.com"
+  widget_base_url: https://incidentbot.example.com
+```
+
+Matrix notes:
+
+- `MATRIX_HOMESERVER`, `MATRIX_USER_ID`, `MATRIX_ACCESS_TOKEN`, and `MATRIX_DIGEST_ROOM_ID` are required when `platform: matrix` unless you provide the equivalent values in the `matrix` config block.
+- `MATRIX_WIDGET_BASE_URL` and `matrix.widget_base_url` are optional, but one of them should be set if you want the embedded Element widget for incident creation.
+- `MATRIX_DEVICE_ID` defaults to `INCIDENTBOT` if it is omitted.
+- Set a stable `SECRET_KEY` in `.env` so Matrix widget tokens remain valid across restarts.
+- Matrix widget routes are available even if `api.enabled` is `false`.
 
 ### Roles
 
@@ -237,7 +320,9 @@ It is important to mark a status as `initial` and a status as `final` either way
 
 ### Slash Command
 
-The bot's default slash command is `/incidentbot`. If you wish to override it, you ca
+This setting applies to Slack deployments only.
+
+The bot's default slash command is `/incidentbot`. If you wish to override it, you can set the following value in `config.yaml`:
 
 To change this value, set the following value in `config.yaml`:
 
@@ -249,6 +334,8 @@ root_slash_command: '/incidentbot'
 !!! note
 
     If you change this value, be sure to update the manifest to match.
+
+    Matrix deployments do not use slash commands. Use the digest-room widget to create incidents and `!incident` text commands to manage them.
 
 ### Updates
 

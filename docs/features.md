@@ -14,6 +14,10 @@ The bot will also send out a reminder if roles have remained unclaimed:
 
 ## Maintenance Windows
 
+!!! note
+
+    Maintenance windows are a Slack-only feature.
+
 Maintenance windows are an optional feature. If enabled, the bot will allow the creation of scheduled maintenance windows to describe things that a team will be doing as part of scheduled operations. These notifications will be sent to a list of channels automatically during updates.
 
 This is useful if you don't have a formal system in place for handling maintenance window notifications.

@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Adds Matrix as a supported chat platform alongside Slack.
+- Adds `platform: matrix` configuration with `matrix.homeserver`, `matrix.user_id`, `matrix.access_token`, `matrix.device_id`, `matrix.digest_room_id`, and `matrix.widget_base_url`.
+- Matrix incident creation is handled through an embedded widget in the digest room instead of a slash command flow.
+- Slack tokens are now only required when `platform: slack`.
+
 ## v2.0.14 (2024-10-10)
 
 - Builds an arm64 version of the util image.
